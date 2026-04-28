@@ -13,7 +13,7 @@ Simple static chat website for GitHub Pages and Google Sites embedding.
 
 GitHub Pages will publish a URL like:
 
-- `https://prithivp12.github.io/Google_sites/`
+- `https://prithivp12.github.io/Unblocked_Chat.github.io/`
 
 ## Embed in Google Sites
 
