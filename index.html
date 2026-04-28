@@ -277,6 +277,32 @@
           max-width: 92%;
         }
       }
+
+      body.embedded .shell {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      body.embedded .frame {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
+      }
+
+      body.embedded .hero {
+        padding-top: 18px;
+        padding-bottom: 14px;
+      }
+
+      body.embedded .hero p {
+        max-width: none;
+      }
+
+      body.embedded .messages {
+        height: 62vh;
+      }
     </style>
   </head>
   <body>
@@ -339,6 +365,7 @@
       const API_URL_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
       const STORAGE_KEY = 'simple-ai-chat-gemini-key';
       const messages = [];
+      const isEmbedded = window.self !== window.top || new URLSearchParams(window.location.search).get('embed') === '1';
 
       const apiKeyInput = document.getElementById('apiKey');
       const modelInput = document.getElementById('model');
@@ -351,6 +378,10 @@
       const messagesEl = document.getElementById('messages');
       const emptyStateEl = document.getElementById('emptyState');
       const statusEl = document.getElementById('status');
+
+      if (isEmbedded) {
+        document.body.classList.add('embedded');
+      }
 
       function readSavedKey() {
         try {
