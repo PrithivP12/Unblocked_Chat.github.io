@@ -305,6 +305,7 @@
           </div>
           <div class="button-stack">
             <button id="clearChat" class="secondary" type="button">Clear chat</button>
+            <button id="forgetKey" class="secondary" type="button">Forget key</button>
           </div>
         </section>
 
@@ -343,6 +344,7 @@
       const modelInput = document.getElementById('model');
       const rememberKeyInput = document.getElementById('rememberKey');
       const saveKeyButton = document.getElementById('saveKey');
+      const forgetKeyButton = document.getElementById('forgetKey');
       const clearChatButton = document.getElementById('clearChat');
       const sendButton = document.getElementById('sendButton');
       const promptInput = document.getElementById('prompt');
@@ -372,6 +374,18 @@
         }
       }
 
+      function forgetSavedKey() {
+        try {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } catch (error) {
+          // Ignore storage cleanup failures and still clear the visible state.
+        }
+        apiKeyInput.value = '';
+        rememberKeyInput.checked = false;
+        setStatus('Saved key removed from this browser.');
+        apiKeyInput.focus();
+      }
+
       function setStatus(text) {
         statusEl.textContent = text;
       }
@@ -380,6 +394,7 @@
         sendButton.disabled = isBusy;
         clearChatButton.disabled = isBusy;
         saveKeyButton.disabled = isBusy;
+        forgetKeyButton.disabled = isBusy;
         apiKeyInput.disabled = isBusy;
         modelInput.disabled = isBusy;
         promptInput.disabled = isBusy;
@@ -481,14 +496,30 @@
 
       apiKeyInput.value = readSavedKey();
       rememberKeyInput.checked = Boolean(apiKeyInput.value);
+      if (apiKeyInput.value) {
+        setStatus('Saved Gemini key loaded from this browser.');
+      }
 
       saveKeyButton.addEventListener('click', saveKeyLocally);
+      forgetKeyButton.addEventListener('click', forgetSavedKey);
       clearChatButton.addEventListener('click', () => {
         messages.length = 0;
         messagesEl.innerHTML = '';
         messagesEl.appendChild(emptyStateEl);
         setStatus('Chat cleared.');
         promptInput.focus();
+      });
+      rememberKeyInput.addEventListener('change', () => {
+        if (rememberKeyInput.checked) {
+          saveKeyLocally();
+        } else {
+          forgetSavedKey();
+        }
+      });
+      apiKeyInput.addEventListener('input', () => {
+        if (rememberKeyInput.checked) {
+          saveKeyLocally();
+        }
       });
       sendButton.addEventListener('click', sendMessage);
       promptInput.addEventListener('keydown', (event) => {
